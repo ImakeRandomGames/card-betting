@@ -43,13 +43,13 @@ def deal_cards():
 def draw_table(dealer_hand, player_hand):
     print "========================================"
     print "========================================"
-    print "  Dealer has ", calculate_total(dealer_hand)
+    print "  Dealer has:"
     for card in dealer_hand:
         print "    ", card
     print
     print " ~ ~ ~ ~ ~ ~ ~ ~ "
     print
-    print "  Player has ", calculate_total(player_hand)
+    print "  Player has ({}):".format(calculate_total(player_hand))
     for card in player_hand:
         print "    ", card
     print "========================================"
@@ -58,6 +58,7 @@ def draw_table(dealer_hand, player_hand):
 
 def calculate_total(hand):
     total = 0
+    ace_count = 0
     for card in hand:
         try:
             total += int(card.rank)
@@ -65,7 +66,14 @@ def calculate_total(hand):
             if card.rank in ["jack", "queen", "king"]:
                 total += 10
             elif card.rank == "ace":
-                pass  # TODO
+                ace_count += 1
+
+    # assume aces are 11 unless you'd bust, then 1
+    for x in range(ace_count):
+        if total <= 10:
+            total += 11
+        else:
+            total += 1
 
     return total
 
