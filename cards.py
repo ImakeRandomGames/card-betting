@@ -4,9 +4,13 @@ class Card(object):
     def __init__(self, suit, rank):
         self.suit = suit
         self.rank = rank
+        self.facing = "up"
 
     def __repr__(self):
-        return "<Card: the {} of {}s>".format(self.rank, self.suit)
+        if self.facing == "up":
+            return "<Card: the {} of {}s>".format(self.rank, self.suit)
+        else:
+            return "<Card: the ???? of ????>"
 
 
 class Deck(object):
