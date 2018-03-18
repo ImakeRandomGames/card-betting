@@ -5,14 +5,10 @@ deck = Deck()
 dealer_hand = []
 player_hand = []
 
+game_mode = None
+
 class GameOver(Exception):
     pass  # base
-
-class DealerBusts(GameOver):
-    pass
-
-class PlayerBusts(GameOver):
-    pass
 
 class Push(GameOver):
     pass
@@ -21,6 +17,12 @@ class PlayerWins(GameOver):
     pass
 
 class DealerWins(GameOver):
+    pass
+
+class DealerBusts(PlayerWins):
+    pass
+
+class PlayerBusts(DealerWins):
     pass
 
 def deal_cards():
@@ -33,36 +35,50 @@ def deal_cards():
     dealer_hand.append(deck.draw())
     player_hand.append(deck.draw())
 
-    draw_table()
 
-    while True:
-        command = raw_input("What would you like to do? [s]tay, [h]it...")
-        follow_command(command)
+    if game_mode == "stdin":
+        draw_table()
+        while True:
+            command = raw_input("What would you like to do? [s]tay, [h]it...")
+            follow_command(command)
+
+    else:
+        return draw_table()
 
 
 def draw_table(messages=None):
-    print "========================================"
-    print "========================================"
-    if any([card.facing == "down" for card in dealer_hand]):
-        print "  Dealer has:"
-    else:
-        print "  Dealer has ({}):".format(sum_hand(dealer_hand))
-    for card in dealer_hand:
-        print "    ", card
-    print
-    print " ~ ~ ~ ~ ~ ~ ~ ~ "
-    print
-    print "  Player has ({}):".format(sum_hand(player_hand))
-    for card in player_hand:
-        print "    ", card
-    print "========================================"
-    print "========================================"
 
-    if messages:
+    if game_mode == "stdin":
+        print "========================================"
+        print "========================================"
+        if any([card.facing == "down" for card in dealer_hand]):
+            print "  Dealer has:"
+        else:
+            print "  Dealer has ({}):".format(sum_hand(dealer_hand))
+        for card in dealer_hand:
+            print "    ", card
         print
-        for message in messages:
-            print "   {}    ".format(message.upper())
+        print " ~ ~ ~ ~ ~ ~ ~ ~ "
         print
+        print "  Player has ({}):".format(sum_hand(player_hand))
+        for card in player_hand:
+            print "    ", card
+        print "========================================"
+        print "========================================"
+
+        if messages:
+            print
+            for message in messages:
+                print "   {}    ".format(message.upper())
+            print
+
+    else:
+        return {
+            "player_hand": player_hand,
+            "player_sum": sum_hand(player_hand),
+            "dealer_hand": dealer_hand,
+            "dealer_sum": sum_hand(dealer_hand),
+        }
 
 
 def sum_hand(hand):
@@ -117,4 +133,5 @@ def follow_command(command):
 
 
 if __name__ == '__main__':
+    game_mode = "stdin"
     deal_cards()
