@@ -21,68 +21,59 @@ def deal_cards():
 
         if command in ["hit", "h"]:
             player_hand.append(deck.draw())
-            draw_table(dealer_hand, player_hand)
 
-            if calculate_total(player_hand) > 21:
-                print
-                print "    YOU BUSTED    "
-                print
-                return
+            if sum_hand(player_hand) > 21:
+                return draw_table(dealer_hand, player_hand, ["you busted"])
 
             else:
+                draw_table(dealer_hand, player_hand)
                 continue
 
         if command in ["stay", "s"]:
             [card.show() for card in dealer_hand]
 
-            while calculate_total(dealer_hand) < 17:
+            while sum_hand(dealer_hand) < 17:
                 dealer_hand.append(deck.draw())
 
-            draw_table(dealer_hand, player_hand)
+            if sum_hand(dealer_hand) > 21:
+                return draw_table(dealer_hand, player_hand, ["dealer busted", "you win"])
 
-            if calculate_total(dealer_hand) > 21:
-                print
-                print "    DEALER BUSTED    "
-                print "    YOU WIN !!!!!    "
-                print
-                return
+            if sum_hand(player_hand) > sum_hand(dealer_hand):
+                return draw_table(dealer_hand, player_hand, ["dealer stays", "you win"])
 
-            if calculate_total(player_hand) > calculate_total(dealer_hand):
-                print
-                print "    YOU WIN !!!!!    "
-                print
-                return
+            if sum_hand(player_hand) < sum_hand(dealer_hand):
+                return draw_table(dealer_hand, player_hand, ["dealer stays", "you lose"])
 
-            if calculate_total(player_hand) < calculate_total(dealer_hand):
-                print
-                print "    YOU LOSE    "
-                print
-                return
-
-            if calculate_total(player_hand) == calculate_total(dealer_hand):
-                print
-                print "    PUSH    "
-                print
-                return
+            if sum_hand(player_hand) == sum_hand(dealer_hand):
+                return draw_table(dealer_hand, player_hand, ["dealer stays", "push"])
 
 
-def draw_table(dealer_hand, player_hand):
+def draw_table(dealer_hand, player_hand, messages=None):
     print "========================================"
     print "========================================"
-    print "  Dealer has:"
+    if any([card.facing == "down" for card in dealer_hand]):
+        print "  Dealer has:"
+    else:
+        print "  Dealer has ({}):".format(sum_hand(dealer_hand))
     for card in dealer_hand:
         print "    ", card
     print
     print " ~ ~ ~ ~ ~ ~ ~ ~ "
     print
-    print "  Player has ({}):".format(calculate_total(player_hand))
+    print "  Player has ({}):".format(sum_hand(player_hand))
     for card in player_hand:
         print "    ", card
     print "========================================"
     print "========================================"
 
+    if messages:
+        print
+        for message in messages:
+            print "   {}    ".format(message.upper())
+        print
 
-def calculate_total(hand):
+
+def sum_hand(hand):
     total = 0
     ace_count = 0
     for card in hand:
