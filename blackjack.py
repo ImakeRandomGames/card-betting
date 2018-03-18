@@ -1,18 +1,18 @@
 from cards import Deck
 
-def begin_game():
+def deal_cards():
     deck = Deck()
 
     dealer_hand = []
     player_hand = []
 
-    dealer_card = deck.deal()
+    dealer_card = deck.draw()
     dealer_card.facing = "down"
     dealer_hand.append(dealer_card)
 
-    player_hand.append(deck.deal())
-    dealer_hand.append(deck.deal())
-    player_hand.append(deck.deal())
+    player_hand.append(deck.draw())
+    dealer_hand.append(deck.draw())
+    player_hand.append(deck.draw())
 
     draw_table(dealer_hand, player_hand)
 
@@ -41,4 +41,4 @@ def calculate_total(hand):
 
 
 if __name__ == '__main__':
-    begin_game()
+    deal_cards()
