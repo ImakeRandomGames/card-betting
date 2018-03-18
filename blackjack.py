@@ -1,5 +1,23 @@
 from cards import Deck
 
+class GameOver(Exception):
+    pass  # base
+
+class DealerBusts(GameOver):
+    pass
+
+class PlayerBusts(GameOver):
+    pass
+
+class Push(GameOver):
+    pass
+
+class PlayerWins(GameOver):
+    pass
+
+class DealerWins(GameOver):
+    pass
+
 def deal_cards():
     deck = Deck()
 
@@ -23,7 +41,7 @@ def deal_cards():
             player_hand.append(deck.draw())
 
             if sum_hand(player_hand) > 21:
-                return draw_table(dealer_hand, player_hand, ["you busted"])
+                raise PlayerBusts()
 
             else:
                 draw_table(dealer_hand, player_hand)
@@ -35,17 +53,18 @@ def deal_cards():
             while sum_hand(dealer_hand) < 17:
                 dealer_hand.append(deck.draw())
 
+            draw_table(dealer_hand, player_hand)
             if sum_hand(dealer_hand) > 21:
-                return draw_table(dealer_hand, player_hand, ["dealer busted", "you win"])
+                raise DealerBusts()
 
             if sum_hand(player_hand) > sum_hand(dealer_hand):
-                return draw_table(dealer_hand, player_hand, ["dealer stays", "you win"])
+                raise PlayerWins()
 
             if sum_hand(player_hand) < sum_hand(dealer_hand):
-                return draw_table(dealer_hand, player_hand, ["dealer stays", "you lose"])
+                raise DealerWins()
 
             if sum_hand(player_hand) == sum_hand(dealer_hand):
-                return draw_table(dealer_hand, player_hand, ["dealer stays", "push"])
+                raise Push()
 
 
 def draw_table(dealer_hand, player_hand, messages=None):
