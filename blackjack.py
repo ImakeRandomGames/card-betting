@@ -21,23 +21,49 @@ def deal_cards():
 
         if command in ["hit", "h"]:
             player_hand.append(deck.draw())
+            draw_table(dealer_hand, player_hand)
 
             if calculate_total(player_hand) > 21:
-                draw_table(dealer_hand, player_hand)
-                print ""
-                print "   YOU BUSTED  "
+                print
+                print "    YOU BUSTED    "
                 print
                 return
 
             else:
-                draw_table(dealer_hand, player_hand)
                 continue
 
-
         if command in ["stay", "s"]:
-            pass
+            [card.show() for card in dealer_hand]
 
+            while calculate_total(dealer_hand) < 17:
+                dealer_hand.append(deck.draw())
 
+            draw_table(dealer_hand, player_hand)
+
+            if calculate_total(dealer_hand) > 21:
+                print
+                print "    DEALER BUSTED    "
+                print "    YOU WIN !!!!!    "
+                print
+                return
+
+            if calculate_total(player_hand) > calculate_total(dealer_hand):
+                print
+                print "    YOU WIN !!!!!    "
+                print
+                return
+
+            if calculate_total(player_hand) < calculate_total(dealer_hand):
+                print
+                print "    YOU LOSE    "
+                print
+                return
+
+            if calculate_total(player_hand) == calculate_total(dealer_hand):
+                print
+                print "    PUSH    "
+                print
+                return
 
 
 def draw_table(dealer_hand, player_hand):

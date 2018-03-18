@@ -6,6 +6,9 @@ class Card(object):
         self.rank = rank
         self.facing = "up"
 
+    def show(self):
+        self.facing = "up"
+
     def __repr__(self):
         if self.facing == "up":
             return "<Card: the {} of {}s>".format(self.rank, self.suit)
