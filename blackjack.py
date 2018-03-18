@@ -1,5 +1,10 @@
 from cards import Deck
 
+deck = Deck()
+
+dealer_hand = []
+player_hand = []
+
 class GameOver(Exception):
     pass  # base
 
@@ -19,10 +24,6 @@ class DealerWins(GameOver):
     pass
 
 def deal_cards():
-    deck = Deck()
-
-    dealer_hand = []
-    player_hand = []
 
     dealer_card = deck.draw()
     dealer_card.facing = "down"
@@ -32,42 +33,14 @@ def deal_cards():
     dealer_hand.append(deck.draw())
     player_hand.append(deck.draw())
 
-    draw_table(dealer_hand, player_hand)
+    draw_table()
 
     while True:
         command = raw_input("What would you like to do? [s]tay, [h]it...")
-
-        if command in ["hit", "h"]:
-            player_hand.append(deck.draw())
-
-            if sum_hand(player_hand) > 21:
-                raise PlayerBusts()
-
-            else:
-                draw_table(dealer_hand, player_hand)
-                continue
-
-        if command in ["stay", "s"]:
-            [card.show() for card in dealer_hand]
-
-            while sum_hand(dealer_hand) < 17:
-                dealer_hand.append(deck.draw())
-
-            draw_table(dealer_hand, player_hand)
-            if sum_hand(dealer_hand) > 21:
-                raise DealerBusts()
-
-            if sum_hand(player_hand) > sum_hand(dealer_hand):
-                raise PlayerWins()
-
-            if sum_hand(player_hand) < sum_hand(dealer_hand):
-                raise DealerWins()
-
-            if sum_hand(player_hand) == sum_hand(dealer_hand):
-                raise Push()
+        follow_command(command)
 
 
-def draw_table(dealer_hand, player_hand, messages=None):
+def draw_table(messages=None):
     print "========================================"
     print "========================================"
     if any([card.facing == "down" for card in dealer_hand]):
@@ -112,6 +85,35 @@ def sum_hand(hand):
             total += 1
 
     return total
+
+def follow_command(command):
+    if command in ["hit", "h"]:
+        player_hand.append(deck.draw())
+
+        if sum_hand(player_hand) > 21:
+            raise PlayerBusts()
+
+        else:
+            draw_table()
+
+    if command in ["stay", "s"]:
+        [card.show() for card in dealer_hand]
+
+        while sum_hand(dealer_hand) < 17:
+            dealer_hand.append(deck.draw())
+
+        draw_table()
+        if sum_hand(dealer_hand) > 21:
+            raise DealerBusts()
+
+        if sum_hand(player_hand) > sum_hand(dealer_hand):
+            raise PlayerWins()
+
+        if sum_hand(player_hand) < sum_hand(dealer_hand):
+            raise DealerWins()
+
+        if sum_hand(player_hand) == sum_hand(dealer_hand):
+            raise Push()
 
 
 if __name__ == '__main__':
