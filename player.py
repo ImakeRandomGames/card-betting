@@ -3,7 +3,7 @@ from blackjack import Game, PlayerWins, DealerWins, Push
 
 class Strategy(object):
     def __init__(self):
-        self.game = Game()
+        self.game = Game(mode="automated", print_games=False)
         self.result = self.play()
 
     def play(self):
