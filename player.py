@@ -1,49 +1,73 @@
 from blackjack import Game, PlayerWins, DealerWins, Push
 
 
-def play():
+class Strategy(object):
+    def __init__(self):
+        self.game = Game()
+        self.result = self.play()
 
-    game = Game()
+    def play(self):
+        while True:
+            game_result = self.decide()
 
-    while True:
+            if game_result:
+                break
 
-        player_sum = game.sum_hand(game.player_hand)
+        return game_result
 
 
-        if player_sum <= 11:
-            game_result = issue_command(game, "hit")
-        elif player_sum >= 17:
-            game_result = issue_command(game, "stay")
+    def decide(self):
+        raise NotImplementedError
 
-        else:
-            dealer_sum = game.sum_hand(game.dealer_hand)
+    def issue_command(self, cmd):
+        try:
 
-            if dealer_sum <= 6:
-                game_result = issue_command(game, "stay")
-            else:
-                game_result = issue_command(game, "hit")
+            self.game.dealer_command(cmd)
+            return None
 
-        if game_result:
-            break
+        except PlayerWins:
+            return "win"
 
-    return game_result
+        except DealerWins:
+            return "lose"
 
-def issue_command(game, cmd):
-    try:
+        except Push:
+            return "draw"
 
-        game.dealer_command(cmd)
         return None
 
-    except PlayerWins:
-        return "win"
 
-    except DealerWins:
-        return "lose"
+class SimpleSeventeen(Strategy):
 
-    except Push:
-        return "draw"
+    def decide(self):
+        player_sum = self.game.sum_hand(self.game.player_hand)
+        if player_sum < 17:
+            game_result = self.issue_command("hit")
+        elif player_sum >= 17:
+            game_result = self.issue_command("stay")
 
-    return None
+        return game_result
+
+class SimpleDealerShowing(Strategy):
+
+
+
+    def decide(self):
+        player_sum = self.game.sum_hand(self.game.player_hand)
+        if player_sum <= 11:  # can't bust
+            game_result = self.issue_command("hit")
+        elif player_sum >= 17:  # close enough
+            game_result = self.issue_command("stay")
+        else:
+            dealer_sum = self.game.sum_hand(self.game.dealer_hand)
+            if dealer_sum <= 6:  # hope dealer busts
+                game_result = self.issue_command("stay")
+            else:  # have to chase them
+                game_result = self.issue_command("hit")
+
+        return game_result
+
+
 
 if __name__ == '__main__':
 
@@ -60,7 +84,7 @@ if __name__ == '__main__':
 
     for _ in range(args.num):
 
-        result = play()
+        result = SimpleSeventeen().result
         stats[result] += 1
 
     print stats
