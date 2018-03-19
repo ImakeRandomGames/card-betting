@@ -19,3 +19,5 @@ This lets you play a single game via the command line, passing in `h` to hit or 
 This plays the specified number of games against the dealer, using the player logic in `player.py`, and prints out some summary statistics at the end.
 
 Try tweaking the player logic to test your own strategies and see if you can win more than you lose!
+
+Partially inspired by [jmmk's](https://github.com/jmmk?tab=repositories) collection of "Connect 4" games.
