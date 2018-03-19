@@ -42,15 +42,17 @@ class Game(object):
         self.dealer_hand.append(self.deck.draw())
         self.player_hand.append(self.deck.draw())
 
+        print "--------- A GAME OF BLACKJACK ---------"
+        print self
+
         if self.mode == "stdin":
             while True:
-                print self
                 command = raw_input("What would you like to do? [s]tay, [h]it...")
                 self.dealer_command(command)
 
 
     def __repr__(self):
-        stdout = "========= A GAME OF BLACKJACK ==========\n"
+        stdout = "========================================\n"
         if any([card.facing == "down" for card in self.dealer_hand]):
             stdout += "  Dealer has:\n"
         else:
@@ -63,7 +65,7 @@ class Game(object):
         stdout += "  Player has ({}):\n".format(self.sum_hand(self.player_hand))
         for card in self.player_hand:
             stdout += "    {}\n".format(card)
-        stdout += "========================================\n"
+        stdout += "========================================"
 
         return stdout
 
