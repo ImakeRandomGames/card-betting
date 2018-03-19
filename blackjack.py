@@ -1,3 +1,6 @@
+import sys
+import logging
+
 from cards import Deck
 
 #
@@ -25,7 +28,7 @@ class PlayerBusts(DealerWins):
 
 class Game(object):
 
-    def __init__(self, mode=None):
+    def __init__(self, mode=None, print_games=True):
 
         self.deck = Deck()
         self.mode = mode
@@ -42,8 +45,13 @@ class Game(object):
         self.dealer_hand.append(self.deck.draw())
         self.player_hand.append(self.deck.draw())
 
-        print "--------- A GAME OF BLACKJACK ---------"
-        print self
+        if print_games:
+            logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format="%(message)s")
+        else:
+            logging.basicConfig(level=logging.CRITICAL)
+
+        logging.info("--------- A GAME OF BLACKJACK ---------")
+        logging.info(self)
 
         if self.mode == "stdin":
             while True:
@@ -54,7 +62,7 @@ class Game(object):
     def __repr__(self):
         stdout = "========================================\n"
         if any([card.facing == "down" for card in self.dealer_hand]):
-            stdout += "  Dealer has:\n"
+            stdout += "  Dealer showing ({}):\n".format(self.sum_hand(self.dealer_hand))
         else:
             stdout += "  Dealer has ({}):\n".format(self.sum_hand(self.dealer_hand))
         for card in self.dealer_hand:
@@ -99,25 +107,25 @@ class Game(object):
     def dealer_command(self, command):
 
         if command in ["hit", "h"]:
-            print " => player has chosen to hit"
+            logging.info(" => player has chosen to hit")
 
             self.player_hand.append(self.deck.draw())
 
-            print self
+            logging.info(self)
 
             if self.sum_hand(self.player_hand) > 21:
                 raise PlayerBusts()
 
 
         if command in ["stay", "s"]:
-            print " => player has chosen to stay"
+            logging.info(" => player has chosen to stay")
 
             [card.show() for card in self.dealer_hand]
 
             while self.sum_hand(self.dealer_hand) < 17:
                 self.dealer_hand.append(self.deck.draw())
 
-            print self
+            logging.info(self)
 
             if self.sum_hand(self.dealer_hand) > 21:
                 raise DealerBusts()
