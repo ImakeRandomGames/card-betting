@@ -76,15 +76,20 @@ if __name__ == '__main__':
     parser.add_argument("-n", "--num", type=int, default=1000, help="How many rounds to you want to simulate")
     args = parser.parse_args()
 
-    stats = {
+    for strategy in [SimpleSeventeen, SimpleDealerShowing]:
+
+        stats = {
             "win": 0,
             "lose": 0,
             "draw": 0,
         }
 
-    for _ in range(args.num):
+        for _ in range(args.num):
 
-        result = SimpleSeventeen().result
-        stats[result] += 1
+            result = strategy().result
+            stats[result] += 1
 
-    print stats
+        win_pct = 100 * stats["win"] / float(args.num)
+        loss_pct = 100 * stats["lose"] / float(args.num)
+
+        print "{}:\t{}% win // {}% loss".format(strategy, win_pct, loss_pct)
