@@ -34,18 +34,23 @@ def issue_command(game, cmd):
         game.dealer_command(cmd)
         return None
 
-    except PlayerWins as e:
+    except PlayerWins:
         return "win"
 
-    except DealerWins as e:
+    except DealerWins:
         return "lose"
 
-    except Push as e:
+    except Push:
         return "draw"
 
     return None
 
 if __name__ == '__main__':
+
+    import argparse
+    parser = argparse.ArgumentParser(description="Let's automate some blackjack")
+    parser.add_argument("-n", "--num", type=int, default=1000, help="How many rounds to you want to simulate")
+    args = parser.parse_args()
 
     stats = {
             "win": 0,
@@ -53,7 +58,7 @@ if __name__ == '__main__':
             "draw": 0,
         }
 
-    for _ in range(100):
+    for _ in range(args.num):
 
         result = play()
         stats[result] += 1
