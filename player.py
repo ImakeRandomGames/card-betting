@@ -51,7 +51,7 @@ class SimpleSeventeen(Strategy):
         player_sum = self.game.sum_hand(self.game.player_hand)
         if player_sum < 17:
             return self.issue_command("hit")
-        elif player_sum >= 17:
+        else:
             return self.issue_command("stay")
 
 
@@ -71,6 +71,22 @@ class SimpleDealerShowing(Strategy):
                 return self.issue_command("hit")
 
 
+class Experimental(Strategy):
+
+    def decide(self):
+        player_sum = self.game.sum_hand(self.game.player_hand)
+        if player_sum <= 11:
+            return self.issue_command("hit")
+        elif player_sum >= 18:
+            return self.issue_command("stay")
+        else:
+            dealer_sum = self.game.sum_hand(self.game.dealer_hand)
+            if dealer_sum <= 6:
+                return self.issue_command("stay")
+            else:
+                return self.issue_command("hit")
+
+
 if __name__ == '__main__':
 
     import argparse
@@ -78,7 +94,7 @@ if __name__ == '__main__':
     parser.add_argument("-n", "--num", type=int, default=1000, help="How many rounds to you want to simulate")
     args = parser.parse_args()
 
-    for strategy in [AlwaysHitOnce, SimpleSeventeen, SimpleDealerShowing]:
+    for strategy in [SimpleSeventeen, SimpleDealerShowing, Experimental]:
 
         stats = {
             "win": 0,
