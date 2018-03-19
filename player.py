@@ -1,40 +1,37 @@
-from blackjack import deal_cards, follow_command, draw_table, PlayerWins, DealerWins, Push
+from blackjack import Game, PlayerWins, DealerWins, Push
 
 
 def play():
 
-    game = deal_cards()
-    game_result = None
+    game = Game()
 
     while True:
 
+        player_sum = game.sum_hand(game.player_hand)
 
-        print draw_table()
 
-        if game["player_sum"] <= 11:
-            game_result = issue_command("hit")
-        elif game["player_sum"] >= 17:
-            game_result = issue_command("stay")
+        if player_sum <= 11:
+            game_result = issue_command(game, "hit")
+        elif player_sum >= 17:
+            game_result = issue_command(game, "stay")
 
         else:
-            for card in game["dealer_hand"]:
-                if card.facing == "up":  # no peeking!
-                    if card.rank <= 6:
-                        game_result = issue_command("stay")
-                    else:
-                        game_result = issue_command("hit")
+            dealer_sum = game.sum_hand(game.dealer_hand)
+
+            if dealer_sum <= 6:
+                game_result = issue_command(game, "stay")
+            else:
+                game_result = issue_command(game, "hit")
 
         if game_result:
             break
 
     return game_result
 
-def issue_command(cmd):
-    print "decided to", cmd
-
+def issue_command(game, cmd):
     try:
 
-        follow_command(cmd)
+        game.dealer_command(cmd)
         return None
 
     except PlayerWins as e:
@@ -50,13 +47,13 @@ def issue_command(cmd):
 
 if __name__ == '__main__':
 
-    for _ in range(100):
-
-        stats = {
+    stats = {
             "win": 0,
             "lose": 0,
             "draw": 0,
         }
+
+    for _ in range(100):
 
         result = play()
         stats[result] += 1
