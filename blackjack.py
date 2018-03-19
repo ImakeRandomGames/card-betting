@@ -73,6 +73,9 @@ class Game(object):
         total = 0
         ace_count = 0
         for card in hand:
+            if card.facing == "down":
+                continue
+
             try:
                 total += int(card.rank)
             except:
