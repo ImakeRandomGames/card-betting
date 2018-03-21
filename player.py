@@ -1,3 +1,5 @@
+import random
+
 from blackjack import Game, PlayerWins, DealerWins, Push
 
 
@@ -34,6 +36,11 @@ class Strategy(object):
             return "draw"
 
         return None
+
+
+class Random(Strategy):
+    def decide(self):
+        return self.issue_command(random.choice(["hit", "stay"]))
 
 
 class AlwaysHitOnce(Strategy):
@@ -94,7 +101,7 @@ if __name__ == '__main__':
     parser.add_argument("-n", "--num", type=int, default=10000, help="How many rounds to you want to simulate")
     args = parser.parse_args()
 
-    for strategy in [SimpleSeventeen, SimpleDealerShowing, Experimental]:
+    for strategy in [Random, SimpleSeventeen, SimpleDealerShowing, Experimental]:
 
         stats = {
             "win": 0,
