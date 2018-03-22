@@ -181,9 +181,20 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description="Let's automate some blackjack")
     parser.add_argument("-n", "--num", type=int, default=10000, help="How many rounds to you want to simulate")
+    parser.add_argument("-r", "--random", action="store_true", help="Do you want to test the 'random' strategies?")
+    parser.add_argument("-s", "--simple", action="store_true", help="Do you want to test the 'simple' strategies?")
+    parser.add_argument("-m", "--monte", action="store_true", help="Do you want to test the 'monte carlo' strategy?")
     args = parser.parse_args()
 
-    for strategy in [Random, MonteCarlo]:
+    strategies = []
+    if args.random:
+        strategies.extend([Random, AlwaysHitOnce])
+    if args.simple:
+        strategies.extend([SimpleSeventeen, SimpleDealerShowing])
+    if args.monte:
+        strategies.extend([MonteCarlo])
+
+    for strategy in strategies:
 
         stats = {
             "win": 0,
