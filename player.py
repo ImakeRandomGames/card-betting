@@ -86,6 +86,14 @@ class MonteCarlo(Strategy):
     then do that.
     """
 
+    def debug(self, msg):
+        if False:
+            print msg
+
+    def info(self, msg):
+        if False:
+            print msg
+
     def decide(self):
         moves = ["hit", "stay"]
         results_by_first_move = {
@@ -98,26 +106,26 @@ class MonteCarlo(Strategy):
                 "wins": 0,
             }
         }
-        for _ in range(10):
+        for _ in range(500):
 
             # clone the current game, using list() so we don't pass references
             simulated_game = Game(mode="automated")
             simulated_game.dealer_hand = list(self.game.dealer_hand)
             simulated_game.player_hand = list(self.game.player_hand)
 
-            # print simulated_game
+            self.debug(simulated_game)
 
             # make a first move, see if the game ends
             first_move = random.choice(moves)
-            print "- first move", first_move
+            self.debug("- first move {}".format(first_move))
             game_result = self.issue_command(first_move, game=simulated_game)
             if game_result:
                 results_by_first_move[first_move]["games"] += 1
                 if game_result == "win":
-                    print " - won on first move"
+                    self.debug(" - won on first move")
                     results_by_first_move[first_move]["wins"] += 1
                 else:
-                    print " - lost on first move"
+                    self.debug(" - lost on first move")
 
             else: # continue playing the game randomly and see what happens
 
@@ -128,27 +136,26 @@ class MonteCarlo(Strategy):
 
                 results_by_first_move[first_move]["games"] += 1
                 if game_result == "win":
-                    print " - won on subsequent move"
+                    self.debug(" - won on subsequent move")
                     results_by_first_move[first_move]["wins"] += 1
                 else:
-                    print " - lost on subsequent move"
+                    self.debug(" - lost on subsequent move")
 
             # print simulated_game
+
+        self.info("=============")
+        self.info(results_by_first_move)
 
         # calculate the win pct for both first moves
         hit_win_pct = results_by_first_move["hit"]["wins"] / float(results_by_first_move["hit"]["games"])
         stay_win_pct = results_by_first_move["stay"]["wins"] / float(results_by_first_move["stay"]["games"])
 
-        print "============="
-        print results_by_first_move
-        print "============="
-
         # issue the winning command
         if hit_win_pct > stay_win_pct:
-            print "=> choosing to hit", hit_win_pct
+            self.info("=> choosing to 'hit' with a {}% win rate".format(hit_win_pct*100))
             return self.issue_command("hit")
         else:
-            print "=> choosing to stay", stay_win_pct
+            self.info("=> choosing to 'stay' with a {}% win rate".format(stay_win_pct*100))
             return self.issue_command("stay")
 
 
