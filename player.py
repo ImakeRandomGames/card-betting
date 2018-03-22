@@ -180,7 +180,7 @@ if __name__ == '__main__':
 
     import argparse
     parser = argparse.ArgumentParser(description="Let's automate some blackjack")
-    parser.add_argument("-n", "--num", type=int, default=10000, help="How many rounds to you want to simulate")
+    parser.add_argument("-n", "--num", type=int, default=1000, help="How many rounds to you want to simulate?")
     parser.add_argument("-r", "--random", action="store_true", help="Do you want to test the 'random' strategies?")
     parser.add_argument("-s", "--simple", action="store_true", help="Do you want to test the 'simple' strategies?")
     parser.add_argument("-m", "--monte", action="store_true", help="Do you want to test the 'monte carlo' strategy?")
