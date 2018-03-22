@@ -106,7 +106,7 @@ class MonteCarlo(Strategy):
                 "wins": 0,
             }
         }
-        for _ in range(500):
+        for _ in range(100):
 
             # clone the current game, using list() so we don't pass references
             simulated_game = Game(mode="automated")
